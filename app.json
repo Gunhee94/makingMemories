@@ -31,9 +31,15 @@
     },
     "plugins": [
       [
-        "expo-image-picker",
+        // "expo-image-picker",
+        // {
+        //   "photosPermission": "The app accesses your photos to let you share them with your friends.",
+        //   "isAccessMediaLocationEnabled": true
+        // },
+        "expo-media-library",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
       ]
