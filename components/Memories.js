@@ -7,77 +7,86 @@ import useInterval from "./../hooks/useInterval";
 export default function Memories({ route }) {
     const images = route.params;
 
-    const [selectedImages, setSelectedImages] = useState(images);
-    const [animation, setAnimation] = useState(new Animated.Value(0));
-    const [aniNum, setAniNum] = useState(0);
-    const [image, setImage] = useState(selectedImages[0].uri);
-    const [aniId, setAniId] = useState("");
+    const animation = {
+        moveImage: new Animated.Value(0),
+        fadeImage: new Animated.Value(0),
+        savleImage: new Animated.Value(0),
+    };
+    const [image, setImage] = useState("");
     const [count, setCount] = useState(0);
-
-    let animationList = [
-        {
-            id: "moveImage",
-            action: Animated.timing(animation, {
-                toValue: 250,
-                duration: 2000,
-                useNativeDriver: true,
-            }),
-        },
-        {
-            id: "fadeInImage",
-            action: Animated.timing(animation, {
-                toValue: 1,
-                duration: 2000,
-                useNativeDriver: true,
-            }),
-        },
-        {
-            id: "scaleImage",
-            action: Animated.timing(animation, {
-                toValue: 1,
-                duration: 2000,
-                useNativeDriver: true,
-            }),
-        },
+    let aniArr = [
+        { key: 0, id: "moveImage", ani: { transform: [{ translateY: animation.moveImage }] } },
+        { key: 1, id: "fadeImage", ani: { opacity: animation.fadeImage } },
+        { key: 2, id: "scaleImage", ani: { transform: [{ scale: animation.savleImage }] } },
     ];
 
-    useEffect(() => {
-        animationList.sort(() => Math.random() - 0.5);
+    const [aniStyles, setAniStyles] = useState("");
 
-        animationList[aniNum].action.start;
-    }, [aniNum]);
+    // gunhee todo
+    // 1. 애니메이션 랜덤
+    // 2. 랜덤 노래
+    // 3. 화면 녹화로 동영상 제작
+
+    const moveImage = () => {
+        Animated.timing(animation.moveImage, {
+            toValue: 250,
+            duration: 2000,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const fadeImage = () => {
+        Animated.timing(animation.fadeImage, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const scaleImage = () => {
+        Animated.timing(animation.savleImage, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const animationStart = (id) => {
+        if (id === "moveImage") {
+            moveImage();
+        } else if (id === "fadeImage") {
+            fadeImage();
+        } else if (id === "scaleImage") {
+            scaleImage();
+        }
+    };
+
+    useEffect(() => {
+        // aniArr.sort(() => Math.random() - 0.5);
+
+        console.log("gunheeLog", aniArr);
+    }, []);
 
     useInterval(
         () => {
-            setCount((count) => count + 1);
-            setAniNum((aniNum) => aniNum + 1);
-            setImage(selectedImages[aniNum].uri);
-            setAniId(animationList[aniNum].id);
+            setCount((count) => ++count);
+
+            setImage(images[count]);
+            setAniStyles(aniArr[count].ani);
+            animationStart(aniArr[count].id);
         },
-        selectedImages.length > count ? 2000 : null
+        images.length > count ? 2000 : null
     );
 
-    console.log("뭐야", count, aniNum, aniId);
     return (
-        <Animated.View style={stylesAnimation(animation).aniId}>
-            <StatusBar style="auto" hidden />
-            <Image source={{ uri: image }} style={styles.image} />
-        </Animated.View>
+        <>
+            <Animated.View style={aniStyles}>
+                <StatusBar style="auto" hidden />
+                <Image style={styles.image} source={{ uri: image.uri }} />
+            </Animated.View>
+        </>
     );
 }
-
-const stylesAnimation = (animation) =>
-    StyleSheet.create({
-        moveImage: {
-            transform: [{ translateY: animation }],
-        },
-        fadeInImage: {
-            opacity: animation,
-        },
-        scaleImage: {
-            transform: [{ scale: animation }],
-        },
-    });
 
 const styles = StyleSheet.create({
     image: {
