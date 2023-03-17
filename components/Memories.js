@@ -5,8 +5,9 @@ import { Animated } from "react-native";
 import useInterval from "./../hooks/useInterval";
 import useSound from "./../hooks/useSound";
 import { Audio } from "expo-av";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function Memories({ route }) {
+export default function Memories({ route, navigation }) {
   const images = route.params;
 
   const animation = {
@@ -32,6 +33,7 @@ export default function Memories({ route }) {
   const [aniStyles, setAniStyles] = useState("");
 
   let soundObject = new Audio.Sound();
+  const [isShow, setIsShow] = useState("none");
 
   // gunhee todo
   // 1. 애니메이션 랜덤
@@ -42,7 +44,7 @@ export default function Memories({ route }) {
   const moveImage = () => {
     Animated.timing(animation.moveImage, {
       toValue: 250,
-      duration: 2000,
+      duration: 3000,
       useNativeDriver: true,
     }).start();
   };
@@ -50,7 +52,7 @@ export default function Memories({ route }) {
   const fadeImage = () => {
     Animated.timing(animation.fadeImage, {
       toValue: 1,
-      duration: 2000,
+      duration: 3000,
       useNativeDriver: true,
     }).start();
   };
@@ -58,7 +60,7 @@ export default function Memories({ route }) {
   const scaleImage = () => {
     Animated.timing(animation.savleImage, {
       toValue: 1,
-      duration: 2000,
+      duration: 3000,
       useNativeDriver: true,
     }).start();
   };
@@ -87,13 +89,27 @@ export default function Memories({ route }) {
       setAniStyles(aniArr[count].ani);
       animationStart(aniArr[count].id);
     },
-    images.length > count ? 2000 : null
+    images.length > count ? 3000 : null
+  );
+
+  useInterval(
+    () => {
+      setIsShow("");
+    },
+    images.length <= count ? 4000 : null
   );
 
   return (
     <>
       <Animated.View style={aniStyles}>
         <StatusBar style="auto" hidden />
+        <Ionicons
+          style={dynamicBtn(isShow).closeBtn}
+          name="ios-close"
+          size={30}
+          color="white"
+          onPress={() => navigation.navigate("Making Memories")}
+        />
         <Image style={styles.image} source={{ uri: image.uri }} />
       </Animated.View>
     </>
@@ -104,5 +120,17 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
+    zIndex: 0,
   },
 });
+
+const dynamicBtn = (isShow) =>
+  StyleSheet.create({
+    closeBtn: {
+      zIndex: 10,
+      position: "absolute",
+      paddingTop: 20,
+      paddingLeft: 20,
+      display: isShow,
+    },
+  });
