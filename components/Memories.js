@@ -17,6 +17,8 @@ export default function Memories({ route, navigation }) {
   };
   const [image, setImage] = useState("");
   const [count, setCount] = useState(0);
+  const [isShow, setIsShow] = useState("none");
+
   let aniArr = [
     {
       key: 0,
@@ -33,13 +35,14 @@ export default function Memories({ route, navigation }) {
   const [aniStyles, setAniStyles] = useState("");
 
   let soundObject = new Audio.Sound();
-  const [isShow, setIsShow] = useState("none");
 
   // gunhee todo
   // 1. 애니메이션 랜덤
   // 2. 랜덤 노래 ok
   // 3. 화면 녹화로 동영상 제작
-  // 4. 추가한 이미지 삭제, 드래그로 위치 옮기기
+  // 4. 추가한 이미지 삭제 ok
+  // 5. 이미지 드래그로 위치 옮기기
+  // 5. 로컬스토리지로 사용법 알려주기
 
   const moveImage = () => {
     Animated.timing(animation.moveImage, {
