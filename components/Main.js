@@ -4,15 +4,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect } from "react";
 import { ImageViewer } from "./ImageViewer";
-import { Ionicons } from "@expo/vector-icons";
 
 export default function Main({ navigation }) {
   const [images, setImages] = useState([]);
-  const [selected, setSelected] = useState(false);
 
   const addPhoto = async () => {
-    if (images.length >= 20) {
-      alert("사진은 20장까지 고를 수 있습니다.");
+    if (images.length >= 12) {
+      alert("사진은 12장까지 고를 수 있습니다.");
     } else {
       let result = await ImagePicker.launchImageLibraryAsync({
         // allowsEditing: true,   // 사진 편집
@@ -23,29 +21,44 @@ export default function Main({ navigation }) {
       });
 
       result.assets.map((e) => (e.selected = false));
-      if (images.length !== 0) {
-        setImages((data) => [...data, ...result.assets]);
+      let setData = [...images, ...result.assets];
+      if (setData.length > 12) {
+        alert("사진은 12장까지 고를 수 있습니다.");
       } else {
-        setImages(result.assets);
+        if (images.length !== 0) {
+          setData = setData.reduce(function (acc, current) {
+            if (
+              acc.findIndex(({ assetId }) => assetId === current.assetId) === -1
+            ) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+          setImages(setData);
+        } else {
+          setImages(result.assets);
+        }
       }
     }
   };
 
-  const changeSeleted = (e) => {
+  const changeSeleted = (image) => {
     let newData = [];
     for (let i = 0; i < images.length; i++) {
-      if (images[i].assetId === e.assetId) {
+      if (images[i].assetId === image.assetId) {
         images[i].selected = !images[i].selected;
+      } else {
+        images[i].selected = false;
       }
       newData.push(images[i]);
     }
     setImages(newData);
   };
 
-  const deleteImage = (e) => {
+  const deleteImage = (image) => {
     let newData = [];
     for (let i = 0; i < images.length; i++) {
-      if (images[i] !== e) {
+      if (images[i] !== image) {
         newData.push(images[i]);
       }
     }
@@ -66,22 +79,12 @@ export default function Main({ navigation }) {
         <View style={styles.viewer}>
           {images.length !== 0 &&
             images.map((e, i) => (
-              <TouchableOpacity
+              <ImageViewer
                 key={i}
-                activeOpacity={1}
-                style={styles.imageArea}
-                onPress={() => changeSeleted(e)}
-                // onLongPress={drag}
-              >
-                <ImageViewer selectedImage={e} style={styles.imageViewer} />
-                <Ionicons
-                  name="ios-close-circle-outline"
-                  size={24}
-                  color="red"
-                  style={dynamicBtn(e.selected).deleteBtn}
-                  onPress={() => deleteImage(e)}
-                />
-              </TouchableOpacity>
+                image={e}
+                changeSeleted={changeSeleted}
+                deleteImage={deleteImage}
+              />
             ))}
         </View>
       </View>
@@ -99,16 +102,6 @@ export default function Main({ navigation }) {
     </View>
   );
 }
-
-const dynamicBtn = (selected) =>
-  StyleSheet.create({
-    deleteBtn: {
-      zIndex: 100,
-      position: "absolute",
-      display: selected ? "" : "none",
-      right: 0,
-    },
-  });
 
 const styles = StyleSheet.create({
   container: {
@@ -140,16 +133,6 @@ const styles = StyleSheet.create({
   viewer: {
     flexDirection: "row",
     flexWrap: "wrap",
-  },
-  imageStyles: {
-    flexDirection: "row",
-  },
-  imageArea: {
-    zIndex: 1,
-  },
-  imageViewer: {
-    zIndex: 0,
-    position: "relative",
   },
   makBtn: {
     width: "100%",
