@@ -20,23 +20,26 @@ export default function Main({ navigation }) {
         quality: 2,
       });
 
-      result.assets.map((e) => (e.selected = false));
-      let setData = [...images, ...result.assets];
-      if (setData.length > 12) {
-        alert("사진은 12장까지 고를 수 있습니다.");
-      } else {
-        if (images.length !== 0) {
-          setData = setData.reduce(function (acc, current) {
-            if (
-              acc.findIndex(({ assetId }) => assetId === current.assetId) === -1
-            ) {
-              acc.push(current);
-            }
-            return acc;
-          }, []);
-          setImages(setData);
+      if (result.assets !== null) {
+        result.assets.map((e) => (e.selected = false));
+        let setData = [...images, ...result.assets];
+        if (setData.length > 12) {
+          alert("사진은 12장까지 고를 수 있습니다.");
         } else {
-          setImages(result.assets);
+          if (images.length !== 0) {
+            setData = setData.reduce(function (acc, current) {
+              if (
+                acc.findIndex(({ assetId }) => assetId === current.assetId) ===
+                -1
+              ) {
+                acc.push(current);
+              }
+              return acc;
+            }, []);
+            setImages(setData);
+          } else {
+            setImages(result.assets);
+          }
         }
       }
     }
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   blank: {
-    flex: 0.1,
+    flex: 0.2,
   },
   header: {
     flex: 0.2,
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
   },
   body: {
     marginTop: 30,
-    flex: 0.6,
+    flex: 0.5,
   },
   viewer: {
     flexDirection: "row",
