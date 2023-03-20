@@ -29,7 +29,7 @@ export default function Memories({ route, navigation }) {
   };
   const [image, setImage] = useState("");
   const [count, setCount] = useState(0);
-  const [isShow, setIsShow] = useState("none");
+  const [isShow, setIsShow] = useState(false);
 
   let aniArr = [
     {
@@ -216,7 +216,7 @@ export default function Memories({ route, navigation }) {
 
   useInterval(
     () => {
-      setIsShow("");
+      setIsShow(true);
     },
     images.length <= count ? 3000 : null
   );
@@ -253,6 +253,6 @@ const dynamicBtn = (isShow) =>
       position: "absolute",
       paddingTop: 20,
       paddingLeft: 20,
-      display: isShow,
+      opacity: isShow ? 1 : 0,
     },
   });

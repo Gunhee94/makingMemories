@@ -37,7 +37,7 @@ const dynamicBtn = (selected) =>
     deleteBtn: {
       zIndex: 100,
       position: "absolute",
-      display: selected ? "" : "none",
+      opacity: selected ? 1 : 0,
       right: 0,
     },
   });

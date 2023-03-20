@@ -12,35 +12,39 @@ export default function Main({ navigation }) {
     if (images.length >= 12) {
       alert("사진은 12장까지 고를 수 있습니다.");
     } else {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        // allowsEditing: true,   // 사진 편집
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsMultipleSelection: true,
-        selectionLimit: 20,
-        quality: 2,
-      });
+      try {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsMultipleSelection: true,
+          selectionLimit: 12,
+          quality: 1,
+        });
 
-      if (result.assets !== null) {
-        result.assets.map((e) => (e.selected = false));
-        let setData = [...images, ...result.assets];
-        if (setData.length > 12) {
-          alert("사진은 12장까지 고를 수 있습니다.");
-        } else {
-          if (images.length !== 0) {
-            setData = setData.reduce(function (acc, current) {
-              if (
-                acc.findIndex(({ assetId }) => assetId === current.assetId) ===
-                -1
-              ) {
-                acc.push(current);
-              }
-              return acc;
-            }, []);
-            setImages(setData);
+        if (result.assets !== null) {
+          result.assets.map((e) => (e.selected = false));
+          let setData = [...images, ...result.assets];
+          if (setData.length > 12) {
+            alert("사진은 12장까지 고를 수 있습니다.");
           } else {
-            setImages(result.assets);
+            if (images.length !== 0) {
+              setData = setData.reduce(function (acc, current) {
+                if (
+                  acc.findIndex(
+                    ({ assetId }) => assetId === current.assetId
+                  ) === -1
+                ) {
+                  acc.push(current);
+                }
+                return acc;
+              }, []);
+              setImages(setData);
+            } else {
+              setImages(result.assets);
+            }
           }
         }
+      } catch (e) {
+        console.log("error", e);
       }
     }
   };
