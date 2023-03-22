@@ -26,6 +26,7 @@ export default function UseWay({ count, setCount }) {
                 } else if (count === 3) {
                     setLacation(windowSize.height * 0.85);
                     setMessage(messages[2]);
+                    count++;
                 }
             }
             if (count >= 4) {
@@ -72,7 +73,6 @@ const styles = StyleSheet.create({
         backgroundColor: "gray",
         zIndex: 100,
         position: "absolute",
-        borderRadius: 5,
         height: "100%",
         width: "100%",
         opacity: 0.7,

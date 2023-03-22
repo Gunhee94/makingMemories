@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect } from "react";
@@ -10,19 +10,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Main({ navigation }) {
     const [images, setImages] = useState([]);
     const [isCheck, setIsCheck] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const addPhoto = async () => {
         if (images.length >= 12) {
             alert("사진은 12장까지 고를 수 있습니다.");
         } else {
             try {
+                setLoading(true);
                 let result = await ImagePicker.launchImageLibraryAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.Images,
                     allowsMultipleSelection: true,
                     selectionLimit: 12,
                     quality: 1,
                 });
-
+                setLoading(false);
                 if (result.assets !== null) {
                     result.assets.map((e) => (e.selected = false));
                     let setData = [...images, ...result.assets];
@@ -76,7 +78,7 @@ export default function Main({ navigation }) {
 
     const getStorage = async () => {
         let result = await AsyncStorage.getItem("makingMemoriesUseWay");
-        AsyncStorage.clear;
+        // AsyncStorage.clear();
         result === null && setIsCheck(1);
     };
 
@@ -90,6 +92,13 @@ export default function Main({ navigation }) {
                 (images.length !== 0 && isCheck === 2) ||
                 (images.length !== 0 && isCheck === 3)) && (
                 <UseWay count={isCheck} setCount={setIsCheck} />
+            )}
+            {loading && (
+                <View style={styles.loadings}>
+                    <View style={styles.indicator}>
+                        <ActivityIndicator size="large" color="#000000" />
+                    </View>
+                </View>
             )}
             <StatusBar style="auto" />
             <View style={styles.blank} />
@@ -115,7 +124,10 @@ export default function Main({ navigation }) {
 
             {images.length !== 0 && (
                 <View style={styles.makBtn}>
-                    <TouchableOpacity onPress={() => navigation.navigate("Memories", images)}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("Memories", images)}
+                        disabled={loading}
+                    >
                         <Text style={styles.font}>만들기</Text>
                     </TouchableOpacity>
                 </View>
@@ -132,6 +144,24 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
+    },
+    loadings: {
+        backgroundColor: "gray",
+        zIndex: 1000,
+        flex: 1,
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+        opacity: 0.7,
+    },
+    indicator: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
     },
     blank: {
         flex: 0.2,
