@@ -172,11 +172,13 @@ const styles = StyleSheet.create({
         marginBottom: 50,
     },
     photoBox: {
-        borderWidth: 1,
+        borderWidth: 3,
         flex: 0.4,
         height: "100%",
-        borderColor: "gray",
+        borderColor: "lightgray",
+        borderRadius: 10,
         alignItems: "center",
+        borderStyle: "dotted",
         justifyContent: "center",
     },
     body: {
