@@ -6,11 +6,13 @@ import { useState, useEffect } from "react";
 import { ImageViewer } from "./ImageViewer";
 import UseWay from "./UseWay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Font from "expo-font";
 
 export default function Main({ navigation }) {
     const [images, setImages] = useState([]);
     const [isCheck, setIsCheck] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [isFont, setIsFont] = useState(false);
 
     const addPhoto = async () => {
         if (images.length >= 12) {
@@ -82,8 +84,16 @@ export default function Main({ navigation }) {
         result === null && setIsCheck(1);
     };
 
+    const getFonts = async () => {
+        await Font.loadAsync({
+            NanumMyeongjoBold: require("../assets/fonts/NanumMyeongjo-Bold.ttf"),
+        });
+        setIsFont(true);
+    };
+
     useEffect(() => {
         getStorage();
+        getFonts();
     }, []);
 
     return (
@@ -122,7 +132,7 @@ export default function Main({ navigation }) {
                 </View>
             </View>
 
-            {images.length !== 0 && (
+            {images.length !== 0 && isFont && (
                 <View style={styles.makBtn}>
                     <TouchableOpacity
                         onPress={() => navigation.navigate("Memories", images)}
@@ -209,5 +219,6 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 30,
         paddingBottom: 30,
+        fontFamily: "NanumMyeongjoBold",
     },
 });

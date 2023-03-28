@@ -2,6 +2,7 @@ import { View, Text, Dimensions, StyleSheet, TouchableOpacity } from "react-nati
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
+import * as Font from "expo-font";
 const windowSize = Dimensions.get("window");
 
 export default function UseWay({ count, setCount }) {
@@ -12,6 +13,7 @@ export default function UseWay({ count, setCount }) {
     ];
     const [message, setMessage] = useState(messages[0]);
     const [location, setLacation] = useState(windowSize.height * 0.13);
+    const [isFont, setIsFont] = useState(false);
 
     const getStorage = async () => {
         try {
@@ -37,22 +39,37 @@ export default function UseWay({ count, setCount }) {
         }
     };
 
+    const getFonts = async () => {
+        await Font.loadAsync({
+            NanumMyeongjo: require("../assets/fonts/NanumMyeongjo-Regular.ttf"),
+        });
+        setIsFont(true);
+    };
+
+    useEffect(() => {
+        getFonts();
+    }, []);
+
     useEffect(() => {
         getStorage();
     }, [count]);
 
     return (
-        <TouchableOpacity
-            style={styles.useWay}
-            onPress={() => {
-                setCount(count + 1);
-            }}
-        >
-            <View style={stylesUseWay(location).useWay}>
-                <AntDesign name="arrowdown" size={24} color="black" />
-                <Text style={styles.font}>{message}</Text>
-            </View>
-        </TouchableOpacity>
+        <>
+            {isFont && (
+                <TouchableOpacity
+                    style={styles.useWay}
+                    onPress={() => {
+                        setCount(count + 1);
+                    }}
+                >
+                    <View style={stylesUseWay(location).useWay}>
+                        <AntDesign name="arrowdown" size={24} color="black" />
+                        <Text style={styles.font}>{message}</Text>
+                    </View>
+                </TouchableOpacity>
+            )}
+        </>
     );
 }
 
@@ -80,5 +97,6 @@ const styles = StyleSheet.create({
     font: {
         color: "black",
         fontWeight: "bold",
+        fontFamily: "NanumMyeongjo",
     },
 });
