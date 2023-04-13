@@ -3,6 +3,8 @@
 [앱스토어 바로가기](https://play.google.com/store/apps/details?id=com.makingMemories)
 (앱 아이콘과 폰트 적용 전 마켓 배포 버전)
 
+<img src="https://user-images.githubusercontent.com/60492505/231615528-820bd939-4caf-4993-a1d4-acee85ee5c9a.png" width="200" height="400"/>
+
 ## 목적
 reactNative 로 앱 출시 경험을 쌓아보고자 사진 애니메이션 앱을 만들었습니다.
 
@@ -16,5 +18,3 @@ reactNative 로 앱 출시 경험을 쌓아보고자 사진 애니메이션 앱�
 + reactNative
 + expo
 + Animated
-
-
