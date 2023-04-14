@@ -58,7 +58,7 @@ export default function Main({ navigation }) {
     const changeSeleted = (image) => {
         let newData = [];
         for (let i = 0; i < images.length; i++) {
-            if (images[i].assetId === image.assetId) {
+            if (images[i].uri === image.uri) {
                 images[i].selected = !images[i].selected;
             } else {
                 images[i].selected = false;
